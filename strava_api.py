@@ -24,3 +24,4 @@ my_dataset = requests.get(activites_url, headers=header, params=param).json()
 
 print(my_dataset)
 # ["map"]["summary_polyline"] sito liek pie ta dataset ja vajag kartes enryptionu, pectam google polyline encryption var atsifret
+print("jaaaa")
