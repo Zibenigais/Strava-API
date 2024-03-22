@@ -13,15 +13,34 @@ payload = {
     'f': 'json'
 }
 
-print("Requesting Token...\n")
+print("Requesting Token...\n") 
 res = requests.post(auth_url, data=payload, verify=False)
 access_token = res.json()['access_token']
 print("Access Token = {}\n".format(access_token))
 
 header = {'Authorization': 'Bearer ' + access_token}
-param = {'per_page': 200, 'page': 1}
-my_dataset = requests.get(activites_url, headers=header, params=param).json()
 
-print(my_dataset)
-# ["map"]["summary_polyline"] sito liek pie ta dataset ja vajag kartes enryptionu, pectam google polyline encryption var atsifret
-print("ja")
+request_page_num = 1
+all_activities = []
+
+while True:
+    param = {'per_page': 200, 'page': request_page_num}
+    my_dataset = requests.get(activites_url, headers=header, params=param).json()
+    if len(my_dataset) == 0:
+        print("breaking")
+        break
+    
+    if all_activities:
+        print("pievieno")
+        all_activities.extend(my_dataset)
+    else:
+        print("jauns")
+        all_activities = my_dataset
+    
+    request_page_num += 1
+print(len(all_activities))
+print(all_activities[0])
+# print(len(my_dataset))
+# for dataset in my_dataset:
+#     print(dataset["name"])
+# #  sito liek pie ta dataset ja vajag kartes enryptionu, pectam google polyline encryption var atsifret
