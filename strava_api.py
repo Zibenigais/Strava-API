@@ -39,7 +39,11 @@ while True:
     
     request_page_num += 1
 print(len(all_activities))
-print(all_activities[0])
+attalums = 0
+for k in all_activities:
+    if k["type"] == "Run":
+        attalums += 1
+print(attalums)
 # print(len(my_dataset))
 # for dataset in my_dataset:
 #     print(dataset["name"])
