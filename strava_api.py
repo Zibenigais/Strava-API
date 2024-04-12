@@ -1,6 +1,42 @@
 import requests
 import urllib3
+from tkinter import *
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+def sportaveidsgui():
+        # Create object 
+    root = Tk() 
+
+    # Adjust size 
+    root.geometry( "375x100" ) 
+
+    w = Label(root, text ='Kādām sporta aktivitātēm vēlies piekļūt?', font = "50")  
+    w.pack()
+
+    def on_selection(value):
+        global choice
+        sportaveids = value  # store the user's choice
+        root.destroy()  # close window
+        
+    # Dropdown menu options 
+    options = [ 
+        "Skriešanas", 
+        "Riteņbraukšanas",
+    ] 
+
+    # datatype of menu text 
+    clicked = StringVar() 
+
+    # initial menu text 
+    clicked.set( "Skriešanas" ) 
+
+    # Create Dropdown menu 
+    drop = OptionMenu( root , clicked , *options, command=on_selection ) 
+    drop.pack() 
+
+    # Execute tkinter 
+    root.mainloop()
+
 
 auth_url = "https://www.strava.com/oauth/token"
 activites_url = "https://www.strava.com/api/v3/athlete/activities"
@@ -39,11 +75,15 @@ while True:
     
     request_page_num += 1
 print(len(all_activities))
-attalums = 0
-for k in all_activities:
-    if k["type"] == "Run":
-        attalums += 1
-print(attalums)
+
+print(all_activities)
+
+
+# attalums = 0
+# for k in all_activities:
+#     if k["type"] == "Run":
+#         attalums += 1
+# print(attalums)
 # print(len(my_dataset))
 # for dataset in my_dataset:
 #     print(dataset["name"])
