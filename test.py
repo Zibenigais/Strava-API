@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import sys
 
 def on_select1(selection):
     print("Dropdown 1 selected:", selection)
@@ -23,9 +24,9 @@ root = tk.Tk()
 root.title("Three Dropdowns")
 
 # Define options for the dropdowns
-options1 = ["Option 1", "Option 2", "Option 3"]
-options2 = ["Option A", "Option B", "Option C"]
-options3 = ["Choice 1", "Choice 2", "Choice 3"]
+options1 = [u"Skriešana", u"Riteņbraukšana"]
+options2 = [u"Attālums", u"Ilgums", u"Kāpuma metri"]
+options3 = [u"Pēdējās 7 dienas", u"Pēdējās 30 dienas", u"Pēdējās 90 dienas"]
 
 # Create variables to store selected values
 selected_option1 = tk.StringVar(root)

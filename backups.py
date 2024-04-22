@@ -1,8 +1,8 @@
 import requests
 import urllib3
 import tkinter as tk
-from tkinter import ttk, messagebox
-from datetime import datetime, timedelta
+from tkinter import ttk
+from datetime import date, timedelta
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -129,47 +129,15 @@ print(len(all_activities))
 
 atbilstosas = []
 laika_periods = periods.get()
-sporta_veids = sports.get()
 if laika_periods.startswith('7'):
-    aktivitates_beigas = datetime.today() - timedelta(days=7)
+    aktivitates_beigas = date.today() - timedelta(days=7)
 elif laika_periods.startswith('30'):
-    aktivitates_beigas = datetime.today() - timedelta(days=30)
+    aktivitates_beigas = date.today() - timedelta(days=30)
 else:
-    aktivitates_beigas = datetime.today() - timedelta(days=90)
+    aktivitates_beigas = date.today() - timedelta(days=90)
 for k in all_activities:
     datums, parejais = k["start_date_local"].split("T")
-    gads, menesis, diena = map(int, datums.split("-"))
-    aktivitates_datums = datetime(gads, menesis, diena)
-    if aktivitates_datums > aktivitates_beigas:
-        if sporta_veids.startswith('S'):
-            if k['type'] == "Run":
-                atbilstosas.append(k)
-            else:
-                pass
-        else:
-            if k['type'] == "Ride":
-                atbilstosas.append(k)
-            else:
-                pass
-if veids.get().startswith("I"):
-    kopejais = 0
-    for k in atbilstosas:
-        kopejais += k["moving_time"]
-def pazinojums():
-    def show_message_and_exit():
-        messagebox.showinfo("Apkopojums ", "This is the message.")
-        root.destroy()  # Close the Tkinter window and exit the program
-
-    # Create the main Tkinter window
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window (optional)
-
-    # Show the messagebox
-    show_message_and_exit()
-
-# Run the Tkinter event loop
-    root.mainloop()
-pazinojums()
-print(len(atbilstosas))
+    
+    print(datums)
 
 
