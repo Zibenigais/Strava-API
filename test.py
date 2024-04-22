@@ -1,72 +1,83 @@
 import tkinter as tk
+from tkinter import ttk
 
-products = ["A","B","C","D"]
+def on_select1(selection):
+    print("Dropdown 1 selected:", selection)
 
-operation = [["aX","aY"],
-             ["bX","bY"],
-             ["cX","cY"],
-             ["dX","dY"]]
+def on_select2(selection):
+    print("Dropdown 2 selected:", selection)
 
-room =[[["axP","axQ"], ["ayP","ayQ"]],
-       [["bxP","bxQ"], ["byP","byQ"]],
-       [["cxP","cxQ"], ["cyP","cyQ"]],
-       [["dxP","dxQ"], ["dyP","dyQ"]]]
+def on_select3(selection):
+    print("Dropdown 3 selected:", selection)
+
+def confirm_selections():
+    root.destroy()
+
+def toggle_menu(menu, options, selected_option, on_select_func):
+    menu.delete(0, tk.END)
+    for item in options:
+        menu.add_command(label=item, command=lambda value=item: [selected_option.set(value), on_select_func(value)])
+    menu.tk_popup(root.winfo_pointerx(), root.winfo_pointery())
 
 root = tk.Tk()
-canvas = tk.Canvas(root, height=1000, width= 1000, bg="white")
-canvas.pack()
+root.title("Three Dropdowns")
 
-tkvar = tk.StringVar(root)
-tkvar.set('Product')
+# Define options for the dropdowns
+options1 = ["Option 1", "Option 2", "Option 3"]
+options2 = ["Option A", "Option B", "Option C"]
+options3 = ["Choice 1", "Choice 2", "Choice 3"]
 
-tkvar2 = tk.StringVar(root)
-tkvar2.set('Operation')
+# Create variables to store selected values
+selected_option1 = tk.StringVar(root)
+selected_option2 = tk.StringVar(root)
+selected_option3 = tk.StringVar(root)
 
-tkvar3 = tk.StringVar(root)
-tkvar3.set('Room')
+# Set default values for the dropdowns
+selected_option1.set(options1[0])
+selected_option2.set(options2[0])
+selected_option3.set(options3[0])
 
-def on_product_change(product):
-    print("Chosen product", product)
+# Create style
+style = ttk.Style()
+style.theme_use("clam")
 
-    i = products.index(product)
+# Create big title label
+big_title_label = tk.Label(root, text="Three Dropdowns", font=("Arial", 16, "bold"))
 
-    # update popupMenu2
-    menu = popupMenu2['menu']
-    menu.delete(0, 'end')
-    for op in operation[i]:
-        menu.add_command(label=op, command=tk._setit(tkvar2, op, on_operation_change))
-    tkvar2.set('Operation')
+# Create small title labels
+title_label1 = tk.Label(root, text="Dropdown 1", font=("Arial", 12))
+title_label2 = tk.Label(root, text="Dropdown 2", font=("Arial", 12))
+title_label3 = tk.Label(root, text="Dropdown 3", font=("Arial", 12))
 
-    # clear popupMenu3
-    popupMenu3['menu'].delete(0, 'end')
-    tkvar3.set('Room')
+# Create dropdowns
+menu1 = tk.Menu(root, tearoff=0)
+menu2 = tk.Menu(root, tearoff=0)
+menu3 = tk.Menu(root, tearoff=0)
 
-def on_operation_change(op):
-    print("Chosen operation", op)
+dropdown1 = tk.OptionMenu(root, selected_option1, *options1)
+dropdown2 = tk.OptionMenu(root, selected_option2, *options2)
+dropdown3 = tk.OptionMenu(root, selected_option3, *options3)
 
-    i = products.index(tkvar.get())
-    j = operation[i].index(op)
+dropdown1["menu"] = menu1
+dropdown2["menu"] = menu2
+dropdown3["menu"] = menu3
 
-    # update popupMenu3
-    menu = popupMenu3['menu']
-    menu.delete(0, 'end')
-    for item in room[i][j]:
-        menu.add_command(label=item, command=tk._setit(tkvar3, item, on_room_change))
-    tkvar3.set('Room')
+# Bind events to dropdowns to handle selection behavior
+dropdown1.bind("<Button-1>", lambda event: toggle_menu(menu1, options1, selected_option1, on_select1))
+dropdown2.bind("<Button-1>", lambda event: toggle_menu(menu2, options2, selected_option2, on_select2))
+dropdown3.bind("<Button-1>", lambda event: toggle_menu(menu3, options3, selected_option3, on_select3))
 
-def on_room_change(room):
-    print("Chosen room", room)
+# Create confirm button
+confirm_button = tk.Button(root, text="Confirm", command=confirm_selections)
 
-exit_button = Button(root, text="Exit", command=root.destroy) 
-exit_button.pack(pady=20) 
-
-popupMenu1 = tk.OptionMenu(canvas, tkvar, *products, command=on_product_change)
-popupMenu1.pack()
-
-popupMenu2 = tk.OptionMenu(canvas, tkvar2, [])
-popupMenu2.pack()
-
-popupMenu3 = tk.OptionMenu(canvas, tkvar3, [])
-popupMenu3.pack()
+# Pack the labels, dropdowns, and confirm button
+big_title_label.pack(pady=10)
+title_label1.pack()
+dropdown1.pack(pady=5)
+title_label2.pack()
+dropdown2.pack(pady=5)
+title_label3.pack()
+dropdown3.pack(pady=5)
+confirm_button.pack(pady=10)
 
 root.mainloop()
