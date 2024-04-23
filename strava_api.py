@@ -3,9 +3,11 @@ import urllib3
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime, timedelta
+import sqlite3
+import warnings
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 def on_select1(selection):
     print("Dropdown 1 selected:", selection)
 
@@ -209,4 +211,107 @@ def pazinojums():
     root.mainloop()
 pazinojums()
 
+def create_main_database(db_name):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
 
+    # Create the main table to store user data
+    cursor.execute('''CREATE TABLE IF NOT EXISTS user_data (
+                        id INTEGER PRIMARY KEY,
+                        run_time TIMESTAMP,
+                        variable TEXT
+                    )''')
+
+    conn.commit()
+    conn.close()
+
+# Function to create the second database
+def create_additional_database(db_name):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Create the additional table to store more user data
+    cursor.execute('''CREATE TABLE IF NOT EXISTS additional_data (
+                        id INTEGER PRIMARY KEY,
+                        user_id INTEGER,
+                        additional_variable TEXT,
+                        FOREIGN KEY(user_id) REFERENCES user_data(id)
+                    )''')
+
+    conn.commit()
+    conn.close()
+
+# Function to create the first database
+def create_main_database():
+    conn = sqlite3.connect("lietotaja_atskaite.db")
+    cursor = conn.cursor()
+
+    # Create the main table to store user data
+    cursor.execute('''CREATE TABLE IF NOT EXISTS user_data (
+                        id INTEGER PRIMARY KEY,
+                        run_time TIMESTAMP,
+                        variable TEXT
+                    )''')
+
+    conn.commit()
+    conn.close()
+
+# Function to create the second database
+def create_additional_database():
+    conn = sqlite3.connect("rezultati.db")
+    cursor = conn.cursor()
+
+    # Create the additional table to store more user data
+    cursor.execute('''CREATE TABLE IF NOT EXISTS additional_data (
+                        id INTEGER PRIMARY KEY,
+                        user_id INTEGER,
+                        additional_variable TEXT,
+                        FOREIGN KEY(user_id) REFERENCES user_data(id)
+                    )''')
+
+    conn.commit()
+    conn.close()
+
+# Function to insert data into the main database
+def insert_data_main(db_name, run_time, variable):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Insert user data into the main table
+    cursor.execute('''INSERT INTO user_data (run_time, variable) VALUES (?, ?)''', (run_time, variable))
+    
+    # Get the last inserted row id (user_id) from the main table
+    user_id = cursor.lastrowid
+
+    conn.commit()
+    conn.close()
+    
+    # Return the user_id
+    return user_id
+
+# Function to insert data into the additional database
+def insert_data_additional(db_name, user_id, additional_variable):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Insert additional user data into the additional table
+    cursor.execute('''INSERT INTO additional_data (user_id, additional_variable) VALUES (?, ?)''', (user_id, additional_variable))
+
+    conn.commit()
+    conn.close()
+
+create_main_database()
+create_additional_database()
+
+# Inserting data into the main database
+current_time = datetime.today()
+if sporta_veids.startswith('S'):
+    sportaveids = "Skriešana"
+else:
+    sportaveids = "Riteņbraukšana"
+
+user_id = insert_data_main("lietotaja_atskaite.db", current_time, sportaveids)
+
+# Inserting data into the additional database
+additional_variable_value = "additional_value_from_application"
+insert_data_additional("rezultati.db", user_id, round(kopejais))
