@@ -127,15 +127,22 @@ while True:
     request_page_num += 1
 print(len(all_activities))
 
+
 atbilstosas = []
 laika_periods = periods.get()
 sporta_veids = sports.get()
+
+
 if laika_periods.startswith('7'):
     aktivitates_beigas = datetime.today() - timedelta(days=7)
+
 elif laika_periods.startswith('30'):
     aktivitates_beigas = datetime.today() - timedelta(days=30)
+    
 else:
     aktivitates_beigas = datetime.today() - timedelta(days=90)
+
+
 for k in all_activities:
     datums, parejais = k["start_date_local"].split("T")
     gads, menesis, diena = map(int, datums.split("-"))
@@ -151,13 +158,44 @@ for k in all_activities:
                 atbilstosas.append(k)
             else:
                 pass
+
+
 if veids.get().startswith("I"):
     kopejais = 0
     for k in atbilstosas:
         kopejais += k["moving_time"]
+
+elif veids.get().startswith("D"):
+    kopejais = 0
+    for k in atbilstosas:
+        kopejais += k["distance"]
+    kopejais = round(kopejais / 1000, 2)
+
+else:
+    kopejais = 0
+    for k in atbilstosas:
+        kopejais += k["total_elevation_gain"]
+
+
 def pazinojums():
     def show_message_and_exit():
-        messagebox.showinfo("Apkopojums ", "This is the message.")
+        if sporta_veids.startswith('S'):
+            if veids.get().startswith("I"): 
+                zina = f"Izvēlētajā laika periodā tu esi skrējis {timedelta(seconds=kopejais)}!"
+            elif veids.get().startswith("D"):
+                zina = f"Izvēlētajā laika periodā tu esi noskrējis {kopejais} kilometrus!"
+            else:
+                zina = f"Izvēlētajā laikā tu esi pieveicis {round(kopejais)} kāpuma metrus!"
+
+        else:
+            if veids.get().startswith("I"): 
+                zina = f"Izvēlētajā laika periodā tu esi braucis {timedelta(seconds=kopejais)}"
+            elif veids.get().startswith("D"):
+                zina = f"Izvēlētajā laika periodā tu esi nobraucis {kopejais} kilometrus!"
+            else:
+                zina = f"Izvēlētajā laikā tu esi pieveicis {round(kopejais)} kāpuma metrus!"
+
+        messagebox.showinfo("Apkopojums", zina)
         root.destroy()  # Close the Tkinter window and exit the program
 
     # Create the main Tkinter window
@@ -170,6 +208,5 @@ def pazinojums():
 # Run the Tkinter event loop
     root.mainloop()
 pazinojums()
-print(len(atbilstosas))
 
 
